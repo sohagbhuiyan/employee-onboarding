@@ -6,8 +6,7 @@ type FormNavigationProps = {
   isSubmitting?: boolean;   
   onBack?: () => void;      
   onNext?: () => void;  
-  nextLabel?: string;    
-  disableNext?: boolean;     
+    
 };
 
 export default function FormNavigation({
@@ -16,8 +15,7 @@ export default function FormNavigation({
   isSubmitting,
   onBack,
   onNext,
-  nextLabel = "Save & Continue", 
-  disableNext = false
+
   
 }: FormNavigationProps) {
   return (

@@ -12,7 +12,6 @@ export default function OnboardingPage() {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<AllFormData>({});
   const [hasUnsaved, setHasUnsaved] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Warn on unsaved changes before closing tab
   useEffect(() => {
@@ -27,7 +26,7 @@ export default function OnboardingPage() {
   }, [hasUnsaved]);
 
   // Go forward and store data
-  const handleNext = (currentStep: number, data?: any) => {
+  const handleNext = <T extends object>(currentStep: number, data?: T) => {
     if (data) {
       setFormData((prev) => ({ ...prev, [`step${currentStep}`]: data }));
       setHasUnsaved(true);
@@ -36,7 +35,7 @@ export default function OnboardingPage() {
   };
 
   // Go back and store data
-  const handleBack = (currentStep: number, data?: any) => {
+  const handleBack = <T extends object>(currentStep: number, data?: T) => {
     if (data) {
       setFormData((prev) => ({ ...prev, [`step${currentStep}`]: data }));
       setHasUnsaved(true);
@@ -45,15 +44,10 @@ export default function OnboardingPage() {
   };
 
   // Final submit
-  const handleSubmit = async (payload: any) => {
-    try {
-      setIsSubmitting(true);
-      console.log("FINAL SUBMIT:", payload);
-      setHasUnsaved(false);
-      alert("Form submitted successfully ✅");
-    } finally {
-      setIsSubmitting(false);
-    }
+  const handleSubmit = async (payload: AllFormData) => {
+    console.log("FINAL SUBMIT:", payload);
+    setHasUnsaved(false);
+    alert("Form submitted successfully ✅");
   };
 
   return (

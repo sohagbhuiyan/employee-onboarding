@@ -31,14 +31,13 @@ export default function Step1PersonalInfo({
     formState: { errors, isSubmitting },
   } = useForm<Step1Data>({
     resolver: zodResolver(step1Schema),
-    defaultValues: defaultValues as any,
+    defaultValues: defaultValues ?? {}, // ✅ removed 'any'
     mode: "onTouched",
   });
 
-const submit = (data: Step1Data) => {
-  onNext(data);
-};
-
+  const submit = (data: Step1Data) => {
+    onNext(data);
+  };
 
   return (
     <form onSubmit={handleSubmit(submit)} className="space-y-4">
@@ -46,36 +45,28 @@ const submit = (data: Step1Data) => {
       <div>
         <Label htmlFor="fullName">Full Name</Label>
         <Input id="fullName" placeholder="John Doe" {...register("fullName")} />
-        {errors.fullName && (
-          <p className="text-red-500 text-sm">{errors.fullName.message}</p>
-        )}
+        {errors.fullName && <p className="text-red-500 text-sm">{errors.fullName.message}</p>}
       </div>
 
       {/* Email */}
       <div>
         <Label htmlFor="email">Email</Label>
         <Input id="email" type="email" placeholder="john@example.com" {...register("email")} />
-        {errors.email && (
-          <p className="text-red-500 text-sm">{errors.email.message}</p>
-        )}
+        {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
       </div>
 
       {/* Phone */}
       <div>
         <Label htmlFor="phone">Phone Number</Label>
         <Input id="phone" placeholder="+1-123-456-7890" {...register("phone")} />
-        {errors.phone && (
-          <p className="text-red-500 text-sm">{errors.phone.message}</p>
-        )}
+        {errors.phone && <p className="text-red-500 text-sm">{errors.phone.message}</p>}
       </div>
 
       {/* DOB */}
       <div>
         <Label htmlFor="dob">Date of Birth</Label>
         <Input id="dob" type="date" {...register("dob")} />
-        {errors.dob && (
-          <p className="text-red-500 text-sm">{errors.dob.message}</p>
-        )}
+        {errors.dob && <p className="text-red-500 text-sm">{errors.dob.message}</p>}
       </div>
 
       {/* Profile Picture */}
@@ -103,9 +94,7 @@ const submit = (data: Step1Data) => {
           />
         )}
         {errors.profilePicture && (
-          <p className="text-red-500 text-sm">
-            {errors.profilePicture.message as string}
-          </p>
+          <p className="text-red-500 text-sm">{errors.profilePicture.message}</p>
         )}
       </div>
 
@@ -119,5 +108,3 @@ const submit = (data: Step1Data) => {
     </form>
   );
 }
-
-

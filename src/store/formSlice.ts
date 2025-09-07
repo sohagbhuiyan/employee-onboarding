@@ -13,11 +13,13 @@ const initialState: FormState = {
   hasUnsaved: false,
 };
 
+type StepData = Partial<AllFormData[keyof AllFormData]>;
+
 const formSlice = createSlice({
   name: "form",
   initialState,
   reducers: {
-    setStepData: (state, action: PayloadAction<{ step: number; data: any }>) => {
+    setStepData: (state, action: PayloadAction<{ step: number; data: StepData }>) => {
       state.data[`step${action.payload.step}`] = action.payload.data;
       state.hasUnsaved = true;
     },

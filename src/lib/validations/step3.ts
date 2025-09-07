@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const step3Schema = z.object({
   skills: z.array(z.string()).min(3, "Select at least 3 skills"),
-  experiences: z.record(z.string(), z.string().optional()), // skill -> experience text
+  experiences: z.record(z.string(), z.string().optional()),
   preferredHours: z.object({
     start: z.string(),
     end: z.string(),

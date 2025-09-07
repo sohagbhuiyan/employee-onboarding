@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { step2Schema, Step2Data } from "@/lib/validations/step2";
+import { Step2Data, departmentEnum, Department, step2Schema } from "@/lib/validations/step2";
 import { mockManagers, skillsByDepartment } from "@/lib/mockData";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -33,14 +33,14 @@ export default function Step2JobDetails({
     formState: { errors, isSubmitting },
   } = useForm<Step2Data>({
     resolver: zodResolver(step2Schema),
-    defaultValues: defaultValues as any,
+    defaultValues: defaultValues ?? {},
     mode: "onTouched",
   });
 
-  const jobType = watch("jobType") || defaultValues?.jobType || "Full-time";
-  const department = watch("department") || defaultValues?.department || "Engineering";
+  const jobType = watch("jobType") ?? defaultValues?.jobType ?? "Full-time";
+  const department = (watch("department") ?? defaultValues?.department ?? "Engineering") as Department;
 
-  const availableDepartments = Object.keys(skillsByDepartment);
+  const availableDepartments = Object.keys(skillsByDepartment) as Department[];
 
   const [mgrSearch, setMgrSearch] = useState("");
   const filteredManagers = useMemo(
@@ -65,7 +65,10 @@ export default function Step2JobDetails({
       {/* Department */}
       <div>
         <Label>Department</Label>
-        <Select defaultValue={department} onValueChange={(val) => setValue("department", val)}>
+        <Select
+          defaultValue={department}
+          onValueChange={(val: Department) => setValue("department", val)}
+        >
           <SelectTrigger>
             <SelectValue />
           </SelectTrigger>
@@ -81,20 +84,29 @@ export default function Step2JobDetails({
             ))}
           </SelectContent>
         </Select>
-        {errors.department && <p className="text-red-500 text-sm">{errors.department.message}</p>}
+        {errors.department && (
+          <p className="text-red-500 text-sm">{errors.department.message}</p>
+        )}
       </div>
 
       {/* Position Title */}
       <div>
         <Label>Position Title</Label>
         <Input placeholder="e.g. Senior Engineer" {...register("positionTitle")} />
-        {errors.positionTitle && <p className="text-red-500 text-sm">{errors.positionTitle.message}</p>}
+        {errors.positionTitle && (
+          <p className="text-red-500 text-sm">{errors.positionTitle.message}</p>
+        )}
       </div>
 
       {/* Job Type */}
       <div>
         <Label>Job Type</Label>
-        <RadioGroup defaultValue={jobType} onValueChange={(val) => setValue("jobType", val as any)}>
+        <RadioGroup
+          defaultValue={jobType}
+          onValueChange={(val: "Full-time" | "Part-time" | "Contract") =>
+            setValue("jobType", val)
+          }
+        >
           <div className="flex gap-4 mt-2">
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="Full-time" id="ft" />
@@ -120,13 +132,19 @@ export default function Step2JobDetails({
           disabled={jobType === "Contract"}
           {...register("salary", { valueAsNumber: true })}
         />
-        {errors.salary && <p className="text-red-500 text-sm">{errors.salary.message}</p>}
+        {errors.salary && (
+          <p className="text-red-500 text-sm">{errors.salary.message}</p>
+        )}
       </div>
 
       {/* Manager Search */}
       <div>
         <Label>Manager</Label>
-        <Input placeholder="Search manager..." value={mgrSearch} onChange={(e) => setMgrSearch(e.target.value)} />
+        <Input
+          placeholder="Search manager..."
+          value={mgrSearch}
+          onChange={(e) => setMgrSearch(e.target.value)}
+        />
 
         <div className="max-h-40 overflow-auto border rounded mt-2">
           {filteredManagers.map((m) => {
@@ -161,7 +179,9 @@ export default function Step2JobDetails({
         </div>
 
         <Input type="hidden" {...register("manager")} />
-        {errors.manager && <p className="text-red-500 text-sm">{errors.manager.message}</p>}
+        {errors.manager && (
+          <p className="text-red-500 text-sm">{errors.manager.message}</p>
+        )}
       </div>
 
       {/* Form Navigation */}

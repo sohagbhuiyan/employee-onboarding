@@ -1,12 +1,13 @@
-import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
 import FormNavigation from "./FormNavigation";
-import {Card, CardContent} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { AllFormData } from "@/types/formTypes";
 
 type Props = {
-  data: any;
+  data: AllFormData;
   onBack?: () => void;
-  onSubmit: (payload: any) => void;
+  onSubmit: (payload: AllFormData & { submittedAt: string }) => void;
   step: number;
   totalSteps: number;
 };
@@ -26,10 +27,12 @@ export default function Step5Review({
     setIsSubmitting(true);
 
     try {
+      // Create a submission payload without modifying AllFormData
       const payload = {
         ...data,
         submittedAt: new Date().toISOString(),
       };
+
       await onSubmit(payload);
     } finally {
       setIsSubmitting(false);
@@ -74,7 +77,10 @@ export default function Step5Review({
           <CardContent className="p-4 space-y-1">
             <h3 className="font-medium text-gray-700">Skills & Preferences</h3>
             <p><span className="font-semibold">Skills:</span> {data.step3?.skills?.join(", ")}</p>
-            <p><span className="font-semibold">Preferred Hours:</span> {data.step3?.preferredHours?.start} – {data.step3?.preferredHours?.end}</p>
+            <p>
+              <span className="font-semibold">Preferred Hours:</span>{" "}
+              {data.step3?.preferredHours?.start} – {data.step3?.preferredHours?.end}
+            </p>
             <p><span className="font-semibold">Remote Preference:</span> {data.step3?.remotePreference}%</p>
             {data.step3?.managerApproved && <p>Manager Approved</p>}
             {data.step3?.notes && <p><span className="font-semibold">Notes:</span> {data.step3?.notes}</p>}
@@ -113,8 +119,6 @@ export default function Step5Review({
         isSubmitting={isSubmitting}
         onBack={onBack}
         onNext={finalize}
-        nextLabel="Submit"
-        disableNext={!confirmed || isSubmitting}
       />
     </form>
   );

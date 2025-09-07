@@ -28,7 +28,13 @@ export default function Step4Emergency({
     formState: { errors, isSubmitting },
   } = useForm<Step4Data>({
     resolver: zodResolver(step4Schema),
-    defaultValues: defaultValues as any,
+    defaultValues: {
+      contactName: "",
+      relationship: "",
+      phone: "",
+      guardianContact: { name: "", phone: "" },
+      ...defaultValues, // ✅ safely merged Partial<Step4Data>
+    },
     mode: "onTouched",
   });
 

@@ -36,19 +36,23 @@ export default function Step3Skills({
     resolver: zodResolver(step3Schema),
     defaultValues: {
       skills: [],
-      ...defaultValues,
-    } as any,
+      experiences: {},
+      preferredHours: { start: "", end: "" },
+      remotePreference: 0,
+      managerApproved: false,
+      notes: "",
+      ...defaultValues, // ✅ safely merged without 'any'
+    } as Partial<Step3Data>,
     mode: "onTouched",
   });
 
-  const skills = skillsByDepartment[department];
+  const skills = skillsByDepartment[department] || [];
   const selectedSkills: string[] = watch("skills") || [];
 
   const toggleSkill = (skill: string, checked: boolean) => {
     const updated = checked
       ? [...selectedSkills, skill]
       : selectedSkills.filter((s) => s !== skill);
-
     setValue("skills", updated, { shouldValidate: true });
   };
 
@@ -73,9 +77,7 @@ export default function Step3Skills({
           ))}
         </div>
         {errors.skills && (
-          <p className="text-red-500 text-sm">
-            {errors.skills.message as string}
-          </p>
+          <p className="text-red-500 text-sm">{errors.skills.message as string}</p>
         )}
       </div>
 
@@ -87,14 +89,14 @@ export default function Step3Skills({
             <Input
               key={skill}
               placeholder={`Experience with ${skill}`}
-              {...register(`experiences.${skill}`)}
+              {...register(`experiences.${skill}` as const)}
               className="mt-2"
             />
           ))}
         </div>
       )}
 
-      {/* Hours */}
+      {/* Preferred Hours */}
       <div>
         <Label>Preferred Working Hours</Label>
         <div className="flex gap-2 mt-2">
@@ -103,11 +105,9 @@ export default function Step3Skills({
         </div>
       </div>
 
-      {/* Remote */}
+      {/* Remote Preference */}
       <div>
-        <Label>
-          Remote Work Preference: {watch("remotePreference") ?? 0}%
-        </Label>
+        <Label>Remote Work Preference: {watch("remotePreference") ?? 0}%</Label>
         <Slider
           defaultValue={[0]}
           max={100}
@@ -128,6 +128,7 @@ export default function Step3Skills({
         <Textarea {...register("notes")} rows={3} />
       </div>
 
+      {/* Form Navigation */}
       <FormNavigation
         step={step}
         totalSteps={totalSteps}
